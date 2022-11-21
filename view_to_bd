@@ -1,0 +1,38 @@
+# Представления:
+	
+#Представление на таблицу workout с фамилиями посетителей и инструкторов
+
+DROP VIEW IF EXISTS workout_view 
+CREATE VIEW  workout_view AS SELECT visitors_id,
+                                    us1.lastname AS lastname_visitors,
+                                    us2.lastname AS lastname_instructor,
+									data_workout,
+									se.sessions_in_day,
+								    w.price 
+							   FROM workout w
+				  			   JOIN users AS us1
+				  				 ON w.visitors_id = us1.id
+				  			   JOIN users AS us2
+				  			     ON w.instructor_id = us2.id
+				  			   JOIN sessions AS se
+				  			     ON w.sessions_id = se.id;
+SELECT * FROM workout_view;
+
+# Представление для получения полной информации по скидочной системе
+DROP VIEW IF EXISTS what_diskount; 
+CREATE VIEW  what_diskount AS SELECT us.firstname,
+                                     us.lastname,
+                                     us.patronymic,
+                                     dc.card_number,
+                                     d.name_discount,
+                                     d.percent_discount
+                                     FROM users AS us
+                                     JOIN discount_cards AS dc
+                                       ON dc.cardholder_user_id = us.id
+                                     JOIN profiles AS p
+                                       ON p.personal_discount = dc.discount_id
+                                     JOIN discount AS d
+                                       ON d.id  = p.personal_discount
+                                     WHERE us.id = p.user_id;
+                                     
+SELECT * FROM  what_diskount    
