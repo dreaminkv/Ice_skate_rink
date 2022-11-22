@@ -1,0 +1,21 @@
+#Триггеры 
+
+# Максимальное количество посетителей в одну сессию, если мы решим увеличить количество посетителей больше 40, сработает триггер 
+
+DELIMITER \\
+
+CREATE TRIGGER max_amount_visitors_update BEFORE UPDATE ON sessions
+FOR EACH ROW
+BEGIN 
+	IF NEW.max_users_on_sessions > 40 THEN  
+	    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'insert canceled, the maximum number of visitors cannot be more than 40';
+	END IF;  
+END \\
+
+DELIMITER ;
+
+#Проверим триггер 
+
+UPDATE sessions 
+SET max_users_on_sessions  = 41
+WHERE id  = 1;
